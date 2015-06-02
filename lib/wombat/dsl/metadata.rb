@@ -13,7 +13,7 @@ module Wombat
       end
 
       def base_url(url)
-        self[:base_url] = url + params[:path]
+        self[:base_url] = url
       end
 
       def path(url)

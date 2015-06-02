@@ -10,7 +10,7 @@ module Wombat
     include Processing::Parser
     extend ActiveSupport::Concern
 
-    def crawl(&block)
+    def crawl(config={}, &block)
       if block
         @metadata_dup = self.class.send(:metadata).clone
         instance_eval do
