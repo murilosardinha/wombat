@@ -12,8 +12,8 @@ module Wombat
         super
       end
 
-      def base_url(url, args = null)
-        self[:base_url] = url + args
+      def base_url(url)
+        self[:base_url] = url + self.path
       end
 
       def path(url)
