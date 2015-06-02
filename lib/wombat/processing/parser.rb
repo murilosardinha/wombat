@@ -10,11 +10,6 @@ module Nokogiri
       attr_accessor :headers
     end
   end
-  module HTML
-    class Document
-      attr_accessor :mechanize_page
-    end
-  end
 end
 
 module Wombat
@@ -23,17 +18,8 @@ module Wombat
       attr_accessor :mechanize, :context, :response_code, :page
 
       def initialize
-        # http://stackoverflow.com/questions/6918277/ruby-mechanize-web-scraper-library-returns-file-instead-of-page
-        @mechanize = Mechanize.new { |a|
-          a.post_connect_hooks << lambda { |_,_,response,_|
-            if response.content_type.nil? || response.content_type.empty?
-              response.content_type = 'text/html'
-            end
-          }
-        }
+        @mechanize = Mechanize.new
         @mechanize.set_proxy(*Wombat.proxy_args) if Wombat.proxy_args
-        @mechanize.user_agent = Wombat.user_agent if Wombat.user_agent
-        @mechanize.user_agent_alias = Wombat.user_agent_alias if Wombat.user_agent_alias
       end
 
       def parse(metadata)
@@ -48,15 +34,12 @@ module Wombat
         page = nil
         parser = nil
         begin
-          @page = metadata[:page]
-
           if metadata[:document_format] == :html
-            @page = @mechanize.get(url) unless @page
-            parser = @page.parser         # Nokogiri::HTML::Document
-            parser.mechanize_page = @page # Mechanize::Page 
+            @page = @mechanize.get(url)
+            parser = @page.parser
             parser.headers = @page.header
           else
-            @page = RestClient.get(url) unless @page
+            @page = RestClient.get(url)
             parser = Nokogiri::XML @page
             parser.headers = @page.headers
           end

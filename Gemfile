@@ -12,5 +12,4 @@ group :development, :test do
   gem 'rspec'
   gem 'vcr'
   gem 'fakeweb'
-  gem 'coveralls', require: false
 end

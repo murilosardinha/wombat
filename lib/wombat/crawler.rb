@@ -27,7 +27,7 @@ module Wombat
         end
         parsed
       else
-        parse self.class.send(:metadata)
+        parse self.class.send(:metadata).merge(config)
       end
     end
 

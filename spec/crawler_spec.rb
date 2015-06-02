@@ -13,7 +13,7 @@ describe Wombat::Crawler do
 
       @crawler.event { event_called = true }
 
-      event_called.should eq(true)
+      event_called.should be_true
     end
 
     it 'should provide metadata to yielded block' do
@@ -30,7 +30,7 @@ describe Wombat::Crawler do
         e.time Time.now
       end
 
-      @crawler.venue do |v|
+      @crawler.venue do |v| 
         v.name "Scooba"
       end
 
@@ -186,6 +186,17 @@ describe Wombat::Crawler do
           @crawler_instance.response_code.should be(200)
         end
       end
+      
+      it "should overwrite base_url and path in parameters" do
+        VCR.use_cassette('basic_crawler_page_w_parameters') do
+
+          @crawler.search "css=.btn-search"
+          @crawler.document_format :xml
+
+          @crawler_instance.crawl(base_url: "http://www.terra.com.br", path: "/portal")
+          @crawler_instance.response_code.should be(200)
+        end        
+      end
 
       it "should have mechanize error response code" do
         VCR.use_cassette('error_page') do
@@ -212,6 +223,8 @@ describe Wombat::Crawler do
           @crawler_instance.response_code.should be(404)
         end
       end
+      
+
     end
   end
 
